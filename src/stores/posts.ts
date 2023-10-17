@@ -9,30 +9,36 @@ export type Post = {
     shortDescription: string,
     longDescription: string,
     date: string,
-}
+};
 
 export const usePostsStore = defineStore('posts', () => {
     const postsList: Ref<Post[]> = ref([]);
+
+    const getPostIndex = (postId: PostId): number => {
+        return postsList.value.findIndex((post) => post.id === postId)
+    };
+
+    const getPostById = (postId: PostId): Post | undefined => {
+        return postsList.value[getPostIndex(postId)]
+    };
 
     const addNewPost = (newPost: Post): void => {
         postsList.value.push(newPost);
     };
 
     const deletePost = (deletedPost: Post): void => {
-        const deletedPostIndex = postsList.value.findIndex((post) => post.id === deletedPost.id);
+        const deletedPostIndex = getPostIndex(deletedPost.id);
         postsList.value.splice(deletedPostIndex, 1);
     };
 
     const editPost = (editedPost: Post): void => {
-        console.log(postsList.value)
-        console.log(editedPost)
-        const editedPostIndex = postsList.value.findIndex((post) => post.id === editedPost.id);
+        const editedPostIndex = getPostIndex(editedPost.id);
         postsList.value.splice(editedPostIndex, 1, editedPost);
-        console.log(postsList.value)
     };
 
     return {
         postsList,
+        getPostById,
         addNewPost,
         deletePost,
         editPost,

@@ -19,12 +19,12 @@ const togglePostEditing = (): void => {
 </script>
 
 <template>
-<article>
+<article @click="$router.push(`posts/${post.id}`)">
     <div>
-        <button @click="togglePostEditing">{{ isEditing ? 'Отмена' : 'Редактировать' }}</button>
-        <button @click="deletePost(post)">Удалить</button>
+        <button @click.stop="togglePostEditing">{{ isEditing ? 'Отмена' : 'Редактировать' }}</button>
+        <button @click.stop="deletePost(post)">Удалить</button>
     </div>
-    <PostsForm v-if="isEditing" :post="post" :togglePostEditing="togglePostEditing" />
+    <PostsForm v-if="isEditing" @click.stop :post="post" :togglePostEditing="togglePostEditing" />
     <div class="post__main" v-else>
         <h2 class="post__title">{{ post.title }}</h2>
         <p class="post__description">{{ post.shortDescription }}</p>
