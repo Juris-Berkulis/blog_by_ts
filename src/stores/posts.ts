@@ -1,5 +1,6 @@
 import { ref, type Ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useCommentsStore } from '@/stores/comments';
 
 export type PostId = `post-${string}`;
 
@@ -12,6 +13,8 @@ export type Post = {
 };
 
 export const usePostsStore = defineStore('posts', () => {
+    const { deleteAllCommentsFromPost } = useCommentsStore();
+
     const postsList: Ref<Post[]> = ref([]);
 
     const getPostIndex = (postId: PostId): number => {
@@ -29,6 +32,7 @@ export const usePostsStore = defineStore('posts', () => {
     const deletePost = (deletedPost: Post): void => {
         const deletedPostIndex = getPostIndex(deletedPost.id);
         postsList.value.splice(deletedPostIndex, 1);
+        deleteAllCommentsFromPost(deletedPost.id);
     };
 
     const editPost = (editedPost: Post): void => {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
 import { type Post, usePostsStore } from '@/stores/posts';
+import { useCommentsStore } from '@/stores/comments';
 import PostsForm from '@/components/PostsForm.vue';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 defineProps<Props>();
 
 const { deletePost } = usePostsStore();
+const { getCommentsCountOfPost } = useCommentsStore();
 
 const isEditing: Ref<boolean> = ref(false);
 
@@ -31,7 +33,7 @@ const togglePostEditing = (): void => {
         <div class="post__ddditionaly">
             <p class="post__commentsInfo">
                 <span>Комментарии:</span>
-                <span>0</span>
+                <span>{{ getCommentsCountOfPost(post.id) }}</span>
             </p>
             <p class="post__date">{{ post.date }}</p>
         </div>

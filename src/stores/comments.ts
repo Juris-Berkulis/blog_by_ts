@@ -42,10 +42,15 @@ export const useCommentsStore = defineStore('comments', () => {
         commentsList.splice(deletedCommentIndex, 1);
     };
 
+    const deleteAllCommentsFromPost = (postId: PostId) => {
+        delete commentsObj.value[postId];
+    };
+
     return {
         getCommentsListForPost,
         getCommentsCountOfPost,
         addCommentIntoPost,
         deleteCommentFromPost,
+        deleteAllCommentsFromPost,
     }
 });
