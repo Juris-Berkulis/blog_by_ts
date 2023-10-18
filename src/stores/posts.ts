@@ -1,6 +1,7 @@
 import { ref, type Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useCommentsStore } from '@/stores/comments';
+import { useLocalStorage } from '@/composables/localStorage';
 
 export type PostId = `post-${string}`;
 
@@ -15,7 +16,12 @@ export type Post = {
 export const usePostsStore = defineStore('posts', () => {
     const { deleteAllCommentsFromPost } = useCommentsStore();
 
-    const postsList: Ref<Post[]> = ref([]);
+    const { setIntoLocalStorage, getFromLocalStorage } = useLocalStorage();
+
+    const postsListKey: string = 'postsListKey';
+    const postsList: Ref<Post[]> = ref(getFromLocalStorage<Post[]>(postsListKey) || []);
+
+    setIntoLocalStorage(postsListKey, postsList.value);
 
     const getPostIndex = (postId: PostId): number => {
         return postsList.value.findIndex((post) => post.id === postId)
