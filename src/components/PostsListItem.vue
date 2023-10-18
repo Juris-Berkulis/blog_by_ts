@@ -3,12 +3,15 @@ import { ref, type Ref } from 'vue';
 import { type Post, usePostsStore } from '@/stores/posts';
 import { useCommentsStore } from '@/stores/comments';
 import PostsForm from '@/components/PostsForm.vue';
+import { useDate } from '@/composables/date';
 
 interface Props {
     post: Post,
 };
 
 defineProps<Props>();
+
+const { converteSavedDateToShow } = useDate();
 
 const { deletePost } = usePostsStore();
 const { getCommentsCountOfPost } = useCommentsStore();
@@ -35,7 +38,7 @@ const togglePostEditing = (): void => {
                 <span>Комментарии:</span>
                 <span>{{ getCommentsCountOfPost(post.id) }}</span>
             </p>
-            <p class="post__date">{{ post.date }}</p>
+            <p class="post__date">{{ converteSavedDateToShow(post.date) }}</p>
         </div>
     </div>
 </article>
