@@ -2,9 +2,11 @@
 import { ref, type Ref } from 'vue';
 import BaseFormFieldWrapper from '@/components/base/BaseFormFieldWrapper.vue';
 import BaseFormField from '@/components/base/BaseFormField.vue';
+import BaseLoader from '@/components/base/BaseLoader.vue';
 import type { PostId } from '@/stores/posts';
 import { type Comment, type CommentId, useCommentsStore } from '@/stores/comments';
 import { useValidation, type FieldsObj, type ValidatedObj } from '@/composables/validation';
+import { useDelay } from '@/composables/delay';
 
 interface Props {
     postId: PostId,
@@ -15,6 +17,10 @@ const props = defineProps<Props>();
 const {
     addCommentIntoPost,
 } = useCommentsStore();
+
+const {
+    createDelay,
+} = useDelay();
 
 export type CommentField = 'authorName' | 'authorEmail' | 'commentText';
 
@@ -35,6 +41,8 @@ const {
     checkAllFields,
     watchFieldObj,
 } = useValidation<CommentField>();
+
+const isLoading: Ref<boolean> = ref(false);
 
 const commentFieldObj: Ref<FieldsObj<CommentField>> = ref({
     authorName: fieldValueAndError({ label: 'Имя', fieldType: 'input'}),
@@ -71,6 +79,8 @@ const submit = (): void => {
     checkAllFields(commentFieldObj, commentValidatedObj);
 
     if (!errorForForm(commentFieldObj)) {
+        isLoading.value = true;
+
         const comment: Comment = {
             id: createCommentId(new Date()), 
             authorName: commentFieldObj.value.authorName.fieldValue, 
@@ -78,9 +88,12 @@ const submit = (): void => {
             text: commentFieldObj.value.commentText.fieldValue,
         };
 
-        addCommentIntoPost(props.postId, comment);
-        isShowFormErrors.value = false;
-        resetForm();
+        createDelay(2).then(() => {
+            addCommentIntoPost(props.postId, comment);
+            isShowFormErrors.value = false;
+            resetForm();
+            isLoading.value = false;
+        });
     }
 };
 
@@ -103,7 +116,8 @@ watchFieldObj(commentFieldObj, commentValidatedObj);
             :fieldType="fieldValue.fieldType"
         />
     </BaseFormFieldWrapper>
-    <button class="form__btn button button_animation" type="submit">Добавить</button>
+    <BaseLoader class="form__loader" v-if="isLoading" />
+    <button class="form__btn button button_animation" v-else type="submit">Добавить</button>
 </form>
 </template>
 

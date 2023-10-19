@@ -2,9 +2,11 @@
 import { ref, type Ref } from 'vue';
 import BaseFormFieldWrapper from '@/components/base/BaseFormFieldWrapper.vue';
 import BaseFormField from '@/components/base/BaseFormField.vue';
+import BaseLoader from '@/components/base/BaseLoader.vue';
 import { usePostsStore, type Post, type PostId } from '@/stores/posts';
 import { useDate } from '@/composables/date';
 import { useValidation, type FieldsObj, type ValidatedObj } from '@/composables/validation';
+import { useDelay } from '@/composables/delay';
 
 interface Props {
     post?: Post,
@@ -18,6 +20,10 @@ const { addNewPost, editPost } = usePostsStore();
 const {
     converteDateToSave,
 } = useDate();
+
+const {
+    createDelay,
+} = useDelay();
 
 export type PostField = 'title' | 'shortDescription' | 'longDescription';
 
@@ -35,6 +41,8 @@ const {
     checkAllFields,
     watchFieldObj,
 } = useValidation<PostField>();
+
+const isLoading: Ref<boolean> = ref(false);
 
 const postFieldObj: Ref<FieldsObj<PostField>> = ref({
     title: fieldValueAndError({ label: 'Заголовок', fieldType: 'input', defaultValue: props.post?.title || ''}),
@@ -70,6 +78,8 @@ const submit = () => {
     checkAllFields(postFieldObj, postValidatedObj);
 
     if (!errorForForm(postFieldObj)) {
+        isLoading.value = true;
+
         const date: Date = new Date();
 
         const id = props.post?.id ? props.post.id : createPostId(date);
@@ -82,12 +92,17 @@ const submit = () => {
             date: converteDateToSave(date),
         };
 
-        if (props.post) editPost(post);
-        else addNewPost(post);
+        createDelay(2).then(() => {
+            if (props.post) editPost(post);
+            else addNewPost(post);
 
-        resetForm();
-        isShowFormErrors.value = false;
-        if (props.togglePostEditing) props.togglePostEditing();
+            resetForm();
+            isShowFormErrors.value = false;
+
+            if (props.togglePostEditing) props.togglePostEditing();
+
+            isLoading.value = false;
+        });
     }
 };
 
@@ -110,7 +125,8 @@ watchFieldObj(postFieldObj, postValidatedObj);
             :fieldType="fieldValue.fieldType"
         />
     </BaseFormFieldWrapper>
-    <button class="form__btn button button_animation" type="submit">Добавить</button>
+    <BaseLoader class="form__loader" v-if="isLoading" />
+    <button class="form__btn button button_animation" v-else type="submit">Добавить</button>
 </form>
 </template>
 

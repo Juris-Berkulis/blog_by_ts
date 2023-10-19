@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue';
-import type { PostId } from '@/stores/posts';
 import CommentsListItem from '@/components/CommentsListItem.vue';
+import type { PostId } from '@/stores/posts';
 import { type Comment, useCommentsStore } from '@/stores/comments';
 
 interface Props {

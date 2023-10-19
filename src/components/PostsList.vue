@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { usePostsStore } from '@/stores/posts';
 import PostsListItem from '@/components/PostsListItem.vue';
+import { usePostsStore } from '@/stores/posts';
 
 const {
     postsList,
@@ -9,7 +9,12 @@ const {
 
 <template>
 <div class="post-list">
-    <PostsListItem class="post-list__item" v-for="post of postsList" :key="post.id" :post="post" />
+    <PostsListItem 
+        class="post-list__item" 
+        v-for="post of postsList" 
+        :key="post.id" 
+        :post="post" 
+    />
 </div>
 </template>
 
