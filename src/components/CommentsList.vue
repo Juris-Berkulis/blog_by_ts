@@ -21,9 +21,18 @@ const commentsList: ComputedRef<Comment[]> = computed(() => {
 
 <template>
 <div>
-    <CommentsListItem v-for="comment of commentsList" :key="comment.id" :postId="postId" :comment="comment" />
+    <CommentsListItem 
+        class="comments-list__item" 
+        v-for="comment of commentsList" 
+        :key="comment.id" 
+        :postId="postId" 
+        :comment="comment" 
+    />
 </div>
 </template>
 
 <style scoped lang="scss">
+.comments-list__item {
+    margin-bottom: 30px;
+}
 </style>

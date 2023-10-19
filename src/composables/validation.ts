@@ -30,7 +30,7 @@ export const useValidation = <T extends Field>() => {
     const maxLengthForAuthorName: number = 50;
     const maxLengthForAuthorEmail: number = 50;
     const maxLengthForCommentText: number = 255;
-    const regExpForFullName = /^[a-z]{1,}@[a-z]{1,10}\.[a-z]{1,8}$/i;
+    const regExpForEmail = /^[a-z]{1,}@[a-z]{1,10}\.[a-z]{1,8}$/i;
     const textForRequiredFieldError = 'Поле не заполненно';
     const textForRegExpError = 'Неверный формат';
     const textForEmailError = `${textForRegExpError}: example@example.example`;
@@ -97,7 +97,7 @@ export const useValidation = <T extends Field>() => {
         maxLengthForAuthorName,
         maxLengthForAuthorEmail,
         maxLengthForCommentText,
-        regExpForFullName,
+        regExpForEmail,
         textForRequiredFieldError,
         textForEmailError,
         isShowFormErrors,

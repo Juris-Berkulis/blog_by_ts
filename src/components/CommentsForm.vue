@@ -22,7 +22,7 @@ const {
     maxLengthForAuthorName,
     maxLengthForAuthorEmail,
     maxLengthForCommentText,
-    regExpForFullName,
+    regExpForEmail,
     textForRequiredFieldError,
     textForEmailError,
     isShowFormErrors,
@@ -37,9 +37,9 @@ const {
 } = useValidation<CommentField>();
 
 const commentFieldObj: Ref<FieldsObj<CommentField>> = ref({
-    authorName: fieldValueAndError({ label: 'Заголовок', fieldType: 'input'}),
-    authorEmail: fieldValueAndError({ label: 'Короткое описание', fieldType: 'textarea'}),
-    commentText: fieldValueAndError({ label: 'Длинное описание', fieldType: 'textarea'}),
+    authorName: fieldValueAndError({ label: 'Имя', fieldType: 'input'}),
+    authorEmail: fieldValueAndError({ label: 'Email', fieldType: 'input'}),
+    commentText: fieldValueAndError({ label: 'Комментарий', fieldType: 'textarea'}),
 });
 
 const commentValidatedObj: ValidatedObj<CommentField> = {
@@ -48,7 +48,7 @@ const commentValidatedObj: ValidatedObj<CommentField> = {
         { isValid: (fieldValue) => maxLength(fieldValue, maxLengthForAuthorName), errorText: textForMaxLengthError(maxLengthForAuthorName) },
     ],
     authorEmail: [
-        { isValid: (fieldValue) => regExpMatching(fieldValue, regExpForFullName), errorText: textForEmailError },
+        { isValid: (fieldValue) => regExpMatching(fieldValue, regExpForEmail), errorText: textForEmailError },
         { isValid: (fieldValue) => maxLength(fieldValue, maxLengthForAuthorEmail), errorText: textForMaxLengthError(maxLengthForAuthorEmail) },
     ],
     commentText: [
@@ -74,7 +74,7 @@ const submit = (): void => {
         const comment: Comment = {
             id: createCommentId(new Date()), 
             authorName: commentFieldObj.value.authorName.fieldValue, 
-            authorEmail: commentFieldObj.value.authorEmail.fieldValue, 
+            authorEmail: commentFieldObj.value.authorEmail.fieldValue.toLowerCase(), 
             text: commentFieldObj.value.commentText.fieldValue,
         };
 
@@ -88,16 +88,22 @@ watchFieldObj(commentFieldObj, commentValidatedObj);
 </script>
 
 <template>
-<form @submit.prevent="submit" @input="isShowFormErrors = true">
-    <BaseFormFieldWrapper v-for="fieldValue, field of commentFieldObj" :key="field" :error="fieldValue.fieldError">
+<form class="form" @submit.prevent="submit" @input="isShowFormErrors = true">
+    <BaseFormFieldWrapper
+        class="form__field-wrapper" 
+        v-for="fieldValue, field of commentFieldObj" 
+        :key="field" 
+        :error="fieldValue.fieldError"
+    >
         <BaseFormField
+            class="form__field"
+            :class="{form__field_error: fieldValue.fieldError}"
             v-model:inputedValue="fieldValue.fieldValue" 
-            :class="{form__input_error: fieldValue.fieldError}"
             :label="fieldValue.label" 
             :fieldType="fieldValue.fieldType"
         />
     </BaseFormFieldWrapper>
-    <button type="submit">Добавить</button>
+    <button class="form__btn button button_animation" type="submit">Добавить</button>
 </form>
 </template>
 
