@@ -20,7 +20,7 @@ const commentsList: ComputedRef<Comment[]> = computed(() => {
 </script>
 
 <template>
-<div>
+<div class="comments-list">
     <CommentsListItem 
         class="comments-list__item" 
         v-for="comment of commentsList" 

@@ -1,3 +1,3 @@
 # Forum
 
-<!-- The project **[on site]()**. -->
+The project **[on site](https://blog-ts.surge.sh/)**.
