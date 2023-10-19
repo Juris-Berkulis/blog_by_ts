@@ -36,7 +36,7 @@ export const useValidation = <T extends Field>() => {
     const textForEmailError = `${textForRegExpError}: example@example.example`;
     const textForMaxLengthError = (minLength: number): string => `Максимальная длина ${minLength} символов`;
 
-    const isShowFormErrors: Ref<boolean> = ref(false);
+    const isShowFormErrors: Ref<boolean> = ref(true);
 
     const requiredField = (value: string | boolean): boolean => {
         return !!value

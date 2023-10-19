@@ -16,4 +16,13 @@ export default defineConfig({
   server: {
     port: 4014,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @import "./src/assets/styles/_variables.scss";
+        `
+      },
+    },
+  },
 });
